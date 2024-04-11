@@ -39,7 +39,6 @@ namespace ContaCorrente.ConsoleApp
                     break;
 
                 case 2:
-
                     this.Logar();
                     break;
 
@@ -50,7 +49,9 @@ namespace ContaCorrente.ConsoleApp
             while(true)
             {
                 Console.Clear();
-                Console.WriteLine($"Nome: {this.conta.NomePrimeiro} {this.conta.NomeUltimo};\nSaldo: {this.conta.Saldo};\nNumero da conta: {this.conta.Numero};");
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine($"Nome: {this.conta.NomePrimeiro} {this.conta.NomeUltimo};\nSaldo: {this.conta.Saldo};\nNumero da conta: {this.conta.Numero};\n");
+                Console.WriteLine("----------------------------------------");
                 Console.Write("** Menu do Usuario **\n0. deslogar\n1. Depositar\n2. retirar\n3. Pagar Conta\n4. Extrato\n");
                 Console.Write("Informe qual opicao quer: ");
                 int id = Convert.ToInt32(Console.ReadLine());
@@ -93,8 +94,6 @@ namespace ContaCorrente.ConsoleApp
                     Extrato extratoRetirar = new Extrato("Retirada", valorRetirar, detaRetirar);
                     this.conta.Extrato.AddFirst(extratoRetirar);
                     break;
-
-                    break;
                 case 3:
                     Console.Clear();
                     Console.Write("** Pagar conta **");
@@ -102,10 +101,11 @@ namespace ContaCorrente.ConsoleApp
                     decimal valorConta = Convert.ToDecimal(Console.ReadLine());
 
                     this.conta.Retirar(valorConta);
+
                     DateTime dataConta = DateTime.Now;
                     string detaConta = Convert.ToString(dataConta);
 
-                    Extrato extratoConta = new Extrato("Retirada", valorConta, detaConta);
+                    Extrato extratoConta = new Extrato("Pagamento de Conta", valorConta, detaConta);
                     this.conta.Extrato.AddFirst(extratoConta);
                     break;
 
@@ -135,10 +135,10 @@ namespace ContaCorrente.ConsoleApp
             Console.Clear ();
 
             Console.Write("** Logar **");
-            Console.Write("\nInforme o primeiro nome da conta: ");
+            Console.Write("\nInforme o primeiro nome do titula da conta: ");
             string nome = Console.ReadLine();
 
-            Console.Write("Informe o cpf da conta: ");
+            Console.Write("Informe o cpf do titular da conta: ");
             string cpf = Console.ReadLine();
 
             foreach (var cont in contas)
@@ -154,12 +154,14 @@ namespace ContaCorrente.ConsoleApp
                     else
                     {
                         Console.WriteLine("Cpf não encontrado");
+                        Console.Write("enter para continuar");
                         Console.ReadLine();
                     }
                 }
                 else
                 {
-                    Console.WriteLine("conta não encontrada");
+                    Console.WriteLine("conta não encontrada!!");
+                    Console.Write("enter para continuar");
                     Console.ReadLine();
                 }
             }

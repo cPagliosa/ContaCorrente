@@ -54,10 +54,10 @@ namespace ContaCorrente.ConsoleApp
             Console.Clear();
             Console.Write("** Cadastrar Conta  **");
             Random ram = new Random();
-            Console.Write("\nInforme o primeiro Nome: ");
+            Console.Write("\nInforme o primeiro Nome do titular: ");
             string priNome = Console.ReadLine();
 
-            Console.Write("Informe o ultimo Nome(Sobrenome): ");
+            Console.Write("Informe o sobrenome do titular: ");
             string ultNome = Console.ReadLine();
 
             Console.Write("Informe o cpf: ");
@@ -81,6 +81,8 @@ namespace ContaCorrente.ConsoleApp
             }else
             {
                 Console.WriteLine("Saldo Insuficiente!!");
+                Console.Write("enter para continuar");
+                Console.ReadLine();
             }
             
             
