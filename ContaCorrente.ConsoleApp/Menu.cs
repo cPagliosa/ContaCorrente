@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,18 +14,21 @@ namespace ContaCorrente.ConsoleApp
 
         //contrutor
         public Menu() { }
+
+        #region Controlhe do menu sem estar logado
+
         public void MostrarMenuIniciar()
         {
-            while (true) 
+            while (true)
             {
                 Console.Clear();
                 Console.Write("** Menu do Banco AP **\n0. Sair\n1. Cadastrar\n2. Logar\n");
                 Console.Write("Informe qual opicao quer: ");
                 int id = Convert.ToInt32(Console.ReadLine());
                 this.ControllerMenuIniciar(id);
-                if(id == 0) break;
+                if (id == 0) break;
             }
-            
+
         }
 
         private void ControllerMenuIniciar(int id)
@@ -44,25 +48,74 @@ namespace ContaCorrente.ConsoleApp
 
             }
         }
+
+        private void Logar()
+        {
+            Console.Clear();
+
+            Console.Write("** Logar **");
+            Console.Write("\nInforme o nome do titula da conta: ");
+            string nome = Console.ReadLine();
+
+            Console.Write("Informe a senha: ");
+            string senha = Console.ReadLine();
+
+            foreach (var cont in contas)
+            {
+                if (nome.Equals(cont.NomePrimeiro))
+                {
+                    if (senha.Equals(cont.NomeUltimo))
+                    {
+                        conta = new Conta();
+                        conta = cont;
+                        this.ControllerMenuLogin();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Senha invalida");
+                        Console.Write("enter para continuar");
+                        Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("conta não encontrada!!");
+                    Console.Write("enter para continuar");
+                    Console.ReadLine();
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region Controlhe do menu qunado estiver logado
         private void ControllerMenuLogin()
         {
-            while(true)
+            while (true)
             {
                 Console.Clear();
                 Console.WriteLine("----------------------------------------");
-                Console.WriteLine($"Nome: {this.conta.NomePrimeiro} {this.conta.NomeUltimo};\nSaldo: {this.conta.Saldo};\nNumero da conta: {this.conta.Numero};\n");
+                Console.WriteLine($"Nome: {this.conta.NomePrimeiro};\nNumero da conta: {this.conta.Numero};\nConta Especial: {Convert.ToString(this.conta.Especial)};" +
+                    $"\nSaldo: {this.conta.Saldo};\nLimite: {this.conta.Limite};");
                 Console.WriteLine("----------------------------------------");
-                Console.Write("** Menu do Usuario **\n0. deslogar\n1. Depositar\n2. retirar\n3. Pagar Conta\n4. Extrato\n");
+
+                Console.Write("** Menu do Usuario **\n0. deslogar\n1. Depositar\n2. retirar\n3. Pagar Conta\n4. Extrato\n5. Lista de Contas Cadastradas\n6. Trasferencia");
                 Console.Write("Informe qual opicao quer: ");
                 int id = Convert.ToInt32(Console.ReadLine());
                 this.ControllerMenuLogado(id);
                 if (id == 0) break;
             }
-            
+
         }
 
         private void ControllerMenuLogado(int id)
         {
+            decimal valor;
+            DateTime data;
+            string dataMgs;
+            Extrato extrato;
+
             switch (id)
             {
                 case 0: break;
@@ -71,45 +124,41 @@ namespace ContaCorrente.ConsoleApp
                     Console.Clear();
                     Console.Write("** Depositar na conta **");
                     Console.Write("\nInforme a quantia a ser depositada: ");
-                    decimal valorDepositar = Convert.ToDecimal(Console.ReadLine());
+                    valor = Convert.ToDecimal(Console.ReadLine());
 
-                    this.conta.Depositar(valorDepositar);
-                    DateTime dataDepositar = DateTime.Now;
-                    string datDepositar = Convert.ToString(dataDepositar);
+                    this.conta.Depositar(valor);
+                    data = DateTime.Now;
+                    dataMgs = Convert.ToString(data);
 
-                    Extrato extraDepositar = new Extrato("Depositar", valorDepositar, datDepositar);
-                    this.conta.Extrato.AddFirst(extraDepositar);
+                    extrato = new Extrato("Depositar", valor, dataMgs);
+                    this.conta.Extrato.AddFirst(extrato);
                     break;
 
                 case 2:
                     Console.Clear();
-                    Console.Write("** Retirar na conta **");
-                    Console.Write("\nInforme a quantia a ser retirada: ");
-                    decimal valorRetirar = Convert.ToDecimal(Console.ReadLine());
+                    Console.Write("** Sacar na conta **");
+                    Console.Write("\nInforme a quantia a ser sacada: ");
+                    valor = Convert.ToDecimal(Console.ReadLine());
 
-                    this.conta.Retirar(valorRetirar);
-                    DateTime dataRetirar = DateTime.Now;
-                    string detaRetirar = Convert.ToString(dataRetirar);
+                    this.conta.Depositar(valor);
+                    data = DateTime.Now;
+                    dataMgs = Convert.ToString(data);
 
-                    Extrato extratoRetirar = new Extrato("Retirada", valorRetirar, detaRetirar);
-                    this.conta.Extrato.AddFirst(extratoRetirar);
+                    extrato = new Extrato("Sacar", valor, dataMgs);
+                    this.conta.Extrato.AddFirst(extrato);
                     break;
                 case 3:
                     Console.Clear();
                     Console.Write("** Pagar conta **");
-                    Console.Write("\nInforme a quantia da conta: ");
-                    decimal valorConta = Convert.ToDecimal(Console.ReadLine());
+                    Console.Write("\nInforme o valor da conta: ");
+                    valor = Convert.ToDecimal(Console.ReadLine());
 
-                    this.conta.Retirar(valorConta);
+                    this.conta.Depositar(valor);
+                    data = DateTime.Now;
+                    dataMgs = Convert.ToString(data);
 
-                    DateTime dataConta = DateTime.Now;
-                    string detaConta = Convert.ToString(dataConta);
-
-                    Extrato extratoConta = new Extrato("Pagamento de Conta", valorConta, detaConta);
-                    this.conta.Extrato.AddFirst(extratoConta);
-                    break;
-
-                    break;
+                    extrato = new Extrato("Pagamento de conta", valor, dataMgs);
+                    this.conta.Extrato.AddFirst(extrato);
                     break;
 
                 case 4:
@@ -125,48 +174,45 @@ namespace ContaCorrente.ConsoleApp
                     Console.Write("enter para continuar");
                     Console.ReadLine();
                     break;
-
-            }
-        }
-
-
-        private void Logar()
-        {
-            Console.Clear ();
-
-            Console.Write("** Logar **");
-            Console.Write("\nInforme o primeiro nome do titula da conta: ");
-            string nome = Console.ReadLine();
-
-            Console.Write("Informe o cpf do titular da conta: ");
-            string cpf = Console.ReadLine();
-
-            foreach (var cont in contas)
-            {
-                if (nome.Equals(cont.NomePrimeiro))
-                {
-                    if (cpf.Equals(cont.Cpf))
-                    {
-                        conta = new Conta();
-                        conta = cont;
-                        this.ControllerMenuLogin();
-                    }
-                    else
-                    {
-                        Console.WriteLine("Cpf não encontrado");
-                        Console.Write("enter para continuar");
-                        Console.ReadLine();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("conta não encontrada!!");
+                case 5:
+                    this.conta.MostrarContas(this.contas);
                     Console.Write("enter para continuar");
                     Console.ReadLine();
-                }
+                    break;
+                case 6:
+                    Console.Clear();
+                    Console.Write("** Trasferencia **");
+                    Console.Write("\nInforme a quantia a trasferida: ");
+                    valor = Convert.ToDecimal(Console.ReadLine());
+
+                    Console.Write("\nInforme o numero da conta destino: ");
+                    int destino = Convert.ToInt32(Console.ReadLine());
+
+                    foreach (Conta conta in contas)
+                    {
+                        if (destino == conta.Numero)
+                        {
+                            this.conta.Trasferencia(this.conta, conta, destino, valor);
+                            data = DateTime.Now;
+                            dataMgs = Convert.ToString(data);
+
+                            extrato = new Extrato($"Tranferecia para conta {destino}", valor, dataMgs);
+                            this.conta.Extrato.AddFirst(extrato);
+                            extrato = new Extrato($"Tranferecia da conta {this.conta.Numero}", valor, dataMgs);
+                            conta.Extrato.AddFirst(extrato);
+                            break;
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("Conta nao encontrada!!");
+                            Console.Write("enter para continuar");
+                            Console.ReadLine();
+                        }
+                    }
+                    break;
             }
         }
-
-        
+        #endregion
     }
 }

@@ -8,8 +8,8 @@ namespace ContaCorrente.ConsoleApp
 {
     internal class Conta
     {
-        private string nomePrimeiro;
-        private string nomeUltimo;
+        private string nome;
+        private string senha;
         private string cpf;
         private decimal saldo;
         private decimal limite;
@@ -22,8 +22,8 @@ namespace ContaCorrente.ConsoleApp
 
 
         //gets e sets
-        public string NomePrimeiro { get => nomePrimeiro; set => nomePrimeiro = value; }
-        public string NomeUltimo { get => nomeUltimo; set => nomeUltimo = value; }
+        public string NomePrimeiro { get => nome; set => nome = value; }
+        public string NomeUltimo { get => senha; set => senha = value; }
         public string Cpf { get => cpf; set => cpf = value; }
         public decimal Saldo { get => saldo; set => saldo = value; }
         public decimal Limite { get => limite; set => limite = value; }
@@ -33,10 +33,10 @@ namespace ContaCorrente.ConsoleApp
 
 
         #region contrutores
-        public Conta(string nomePrimeiro, string nomeUltimo, string cpf, decimal saldo, decimal limite, int numero, bool especial, LinkedList<Extrato> extrato)
+        public Conta(string nome, string senha, string cpf, decimal saldo, decimal limite, int numero, bool especial, LinkedList<Extrato> extrato)
         {
-            this.nomePrimeiro = nomePrimeiro;
-            this.nomeUltimo = nomeUltimo;
+            this.nome = nome;
+            this.senha = senha;
             this.cpf = cpf;
             this.saldo = saldo;
             this.limite = limite;
@@ -53,17 +53,17 @@ namespace ContaCorrente.ConsoleApp
         {
             Console.Clear();
             Console.Write("** Cadastrar Conta  **");
-            Random ram = new Random();
-            Console.Write("\nInforme o primeiro Nome do titular: ");
-            string priNome = Console.ReadLine();
 
-            Console.Write("Informe o sobrenome do titular: ");
-            string ultNome = Console.ReadLine();
+            Console.Write("\nInforme o nome completo do titular: ");
+            string nome = Console.ReadLine();
+
+            Console.Write("\nInforme senha: ");
+            string senha = Console.ReadLine();
 
             Console.Write("Informe o cpf: ");
             string cpf = Console.ReadLine();
 
-            Conta conta = new Conta(priNome, ultNome, cpf, 0, 0, ram.Next(1, 1000), false, new LinkedList<Extrato>());
+            Conta conta = new Conta(nome, senha, cpf, 0, 0, lista.Count+1, false, new LinkedList<Extrato>());
 
             return conta;
         }
@@ -92,6 +92,32 @@ namespace ContaCorrente.ConsoleApp
         {
             if ((this.saldo - valor) > 0) return true;
             else return false;
+        }
+
+        public void MostrarContas(LinkedList<Conta> lista)
+        {
+            foreach (Conta conta in lista)
+            {              
+                Console.WriteLine($"\nTitular da conta: {conta.nome}\nNumero da conta: {conta.Numero}");
+            }
+        }
+
+        public void Trasferencia(Conta origem,Conta destino,int numeroDestino,decimal valor)
+        {
+            if(numeroDestino == destino.numero)
+            {
+                if (PossivelMovimentacao(valor))
+                {
+                    destino.Saldo += valor;
+                    origem.Saldo -= valor;
+                }
+                else
+                {
+                    Console.WriteLine("Saldo Insuficiente!!");
+                    Console.Write("enter para continuar");
+                    Console.ReadLine();
+                }
+            }
         }
     }
 }
